@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Input;
 /*================================================*/
 using Newtonsoft.Json;
@@ -92,7 +93,7 @@ namespace OperatorAdder.ViewModel
 
 		private void OnChanged(object source, FileSystemEventArgs e)
 		{
-			Thread.Sleep(2000);
+
 			try
 			{
 				if (e.ChangeType == WatcherChangeTypes.Created)
@@ -106,9 +107,14 @@ namespace OperatorAdder.ViewModel
 					
 					OperatorToAppend = ";OPERATOR: " + OperatorToAppend + "\r\n";
 
-						StreamReader myReader = new StreamReader(e.FullPath);
 
-						replacement = Regex.Replace(myReader.ReadToEnd(), @"\t|\n|\r", "");
+					/*FileChecker(e.FullPath);*/
+
+					while (!IsFileReady(e.FullPath)) { }
+
+					StreamReader myReader = new StreamReader(e.FullPath);
+
+					replacement = Regex.Replace(myReader.ReadToEnd(), @"\t|\n|\r", "");
 						
 						replacement = replacement + OperatorToAppend;
 						myReader.Close();
@@ -153,6 +159,45 @@ namespace OperatorAdder.ViewModel
 			Thread.Sleep(1000);
 		}
 
+		public static bool IsFileReady(string filename)
+		{
+			// If the file can be opened for exclusive access it means that the file
+			// is no longer locked by another process.
+			try
+			{
+				using (FileStream inputStream = File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.None))
+					return inputStream.Length > 0;
+			}
+			catch (Exception)
+			{
+				return false;
+			}
+		}
+
+
+		/*public async Task FileChecker(string fn ) {
+			while (true)
+			{
+				try
+				{
+					using (StreamReader Fs = new StreamReader(fn))
+					{
+						//the file is close
+						Fs.Close();
+						break;
+					}
+				}
+				catch (IOException ex)
+				{
+					//wait and retry
+					FileText = "File I/O Error on check ";
+					File.AppendAllText(logFile, FileText + ' ' + fn + ' ' + ex.ToString());
+					Thread.Sleep(1000);
+				}
+			}
+		
+			await FileChecker(fn);
+		} */
 		#region ICommand _addCommand;
 		private ICommand _addCommand;
 		public ICommand AddCommand
