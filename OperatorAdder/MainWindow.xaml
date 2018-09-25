@@ -1,0 +1,167 @@
+﻿<Controls:MetroWindow
+	x:Class="OperatorAdder.MainWindow"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:Controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:local="clr-namespace:OperatorAdder"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:vm="clr-namespace:OperatorAdder.ViewModel"
+	Title="SGS Lab Operator"
+	Width="450"
+	Height="480"
+	FontFamily="Arial"
+	ResizeMode="NoResize"
+	WindowStartupLocation="CenterScreen"
+	WindowState="Normal"
+	mc:Ignorable="d">
+	<Window.DataContext>
+		<vm:ViewModel />
+	</Window.DataContext>
+	<Window.Resources>
+		<DataTemplate DataType="{x:Type vm:OperatorViewModel}">
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+				<Grid.RowDefinitions>
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="Auto" />
+					<RowDefinition Height="*" />
+				</Grid.RowDefinitions>
+				<TextBlock
+					Grid.Row="0"
+					Grid.Column="0"
+					HorizontalAlignment="Center"
+					Text="Name" />
+				<TextBox
+					Grid.Row="0"
+					Grid.Column="1"
+					Width="100"
+					HorizontalAlignment="Center"
+					Text="{Binding UserName}" />
+				<TextBlock
+					Grid.Row="1"
+					Grid.Column="0"
+					HorizontalAlignment="Center"
+					Text="Id" />
+				<TextBox
+					Grid.Row="1"
+					Grid.Column="1"
+					Width="100"
+					HorizontalAlignment="Center"
+					Text="{Binding Id}" />
+
+			</Grid>
+		</DataTemplate>
+	</Window.Resources>
+
+	<Grid
+		Width="430"
+		Height="450"
+		HorizontalAlignment="Left"
+		VerticalAlignment="Top">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="90" MinHeight="90" />
+			<RowDefinition MinHeight="300" />
+		</Grid.RowDefinitions>
+		<TextBlock
+			Grid.Row="0"
+			Grid.Column="0"
+			Margin="298,10,76,63">
+			<Hyperlink Command="{Binding AddCommand}">
+				<Hyperlink.Style>
+					<Style BasedOn="{StaticResource {x:Type Hyperlink}}" TargetType="Hyperlink">
+						<Setter Property="Foreground" Value="Gray" />
+					</Style>
+				</Hyperlink.Style>
+				Добавить
+			</Hyperlink>
+		</TextBlock>
+		<TextBlock
+			Grid.Row="0"
+			Grid.Column="0"
+			Height="17"
+			Margin="359,0,10,63"
+			VerticalAlignment="Bottom">
+			<Hyperlink Command="{Binding DeleteCommand}">
+				<Hyperlink.Style>
+					<Style BasedOn="{StaticResource {x:Type Hyperlink}}" TargetType="Hyperlink">
+						<Setter Property="Foreground" Value="Gray" />
+					</Style>
+				</Hyperlink.Style>
+				Удалить
+			</Hyperlink>
+		</TextBlock>
+		<TextBlock Grid.Row="0" Margin="298,27,0,46">
+			<Hyperlink Command="{Binding EditCommand}">
+				<Hyperlink.Style>
+					<Style BasedOn="{StaticResource {x:Type Hyperlink}}" TargetType="Hyperlink">
+						<Setter Property="Foreground" Value="Gray" />
+					</Style>
+				</Hyperlink.Style>
+				Редактировать
+			</Hyperlink>
+		</TextBlock>
+		<Button
+			Grid.Row="0"
+			Grid.Column="0"
+			Width="98"
+			Margin="0,52,34,10"
+			HorizontalAlignment="Right"
+			Command="{Binding SelectUserCommand}"
+			Content="выбрать" />
+		<!--<ContentControl
+			Grid.Row="0"
+			Margin="0,0,170,10"
+			Content="{Binding Operator}" />-->
+		<StackPanel Grid.RowSpan="2" Margin="5,0,0,355">
+			<TextBlock Margin="0,0,229,0" Text="Имя пользователя:" />
+			<TextBox Margin="0,0,151,0" Text="{Binding Operator.UserName}" />
+			<TextBlock
+				Height="15"
+				Margin="0,0,151,0"
+				Text="Выбран оператор для экспорта:" />
+			<TextBox
+				Height="29"
+				Margin="0,0,151,0"
+				BorderBrush="Transparent"
+				IsEnabled="False"
+				Text="{Binding SelectedOperator.SelectedUserName}" />
+			<!--<ListView Height="35" ItemsSource="{Binding SelectedOperators}">
+				<ListView.View>
+					<GridView>
+						<GridViewColumn DisplayMemberBinding="{Binding SelectedOperator.UserNameForExport}" Header="Name" />
+
+					</GridView>
+				</ListView.View>
+			</ListView>-->
+		</StackPanel>
+
+		<ListView
+			Grid.Row="1"
+			Margin="5,10,10,0"
+			ItemsSource="{Binding Operators}"
+			RenderTransformOrigin="0.5,0.5"
+			ScrollViewer.CanContentScroll="True"
+			ScrollViewer.VerticalScrollBarVisibility="Visible"
+			SelectedItem="{Binding Operator}">
+			<ListView.View>
+				<GridView>
+					<GridViewColumn
+						Width="250"
+						DisplayMemberBinding="{Binding UserName}"
+						Header="Name" />
+
+					<!--<GridViewColumn
+						Width="80"
+						DisplayMemberBinding="{Binding Id}"
+						Header="Age" />-->
+				</GridView>
+			</ListView.View>
+
+		</ListView>
+
+	</Grid>
+</Controls:MetroWindow>
