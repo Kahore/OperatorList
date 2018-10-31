@@ -128,9 +128,15 @@ namespace OperatorAdder.ViewModel
 					myWriter.Close();
 					myWriter.Dispose();
 
-					File.Move(e.FullPath, dest + e.Name);
-
-					GC.Collect();
+                    if ( !File.Exists(dest + e.Name) )
+                    {
+                        File.Move( e.FullPath, dest + e.Name );
+                    }
+                    else {
+                        File.Delete( e.FullPath );
+                    }
+                       
+                    GC.Collect();
 					GC.WaitForPendingFinalizers();
 					GC.Collect();
 				}
