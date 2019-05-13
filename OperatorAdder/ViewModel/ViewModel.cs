@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Input;
 /*================================================*/
 using Newtonsoft.Json;
@@ -64,20 +63,21 @@ namespace OperatorAdder.ViewModel
 			//pathToWatch = Properties.Settings.Default.PathToInstrumentFolder;
 			dest = Environment.GetEnvironmentVariable("UserProfile") + @"\LabOperatorSGS\Export\done\";
 
-			//dest = Properties.Settings.Default.PathToExport;
-			
-			RunWatch();
+            //dest = Properties.Settings.Default.PathToExport;
+            RunWatch();
 		}
-		/// <summary>
-		/// Создаёт все необходимые пути для работы
-		/// </summary>
-		private void CheckAllDir()
+        /// <summary>
+        /// Create all environment folder
+        /// </summary>
+        private void CheckAllDir()
 		{
 			Directory.CreateDirectory(Environment.GetEnvironmentVariable("UserProfile") + @"\LabOperatorSGS\");
 			Directory.CreateDirectory(Environment.GetEnvironmentVariable("UserProfile") + @"\LabOperatorSGS\Export\");
 			Directory.CreateDirectory(Environment.GetEnvironmentVariable("UserProfile") + @"\LabOperatorSGS\Export\done\");
 		}
-		
+		/// <summary>
+        /// Await the export file from instrument
+        /// </summary>
 	public void RunWatch()
 		{
 			var watcher = new FileSystemWatcher
@@ -107,9 +107,6 @@ namespace OperatorAdder.ViewModel
 					
 					OperatorToAppend = ";OPERATOR: " + OperatorToAppend + "\r\n";
 
-
-					/*FileChecker(e.FullPath);*/
-
 					while (!IsFileReady(e.FullPath)) { }
 
 					StreamReader myReader = new StreamReader(e.FullPath);
@@ -123,8 +120,7 @@ namespace OperatorAdder.ViewModel
 						StreamWriter myWriter = new StreamWriter(e.FullPath);
 
 						myWriter.Write(replacement);
-					//перед чтением необходимо вернуть указатель потока в нужное место, у меня - в начало файла.
-					//myWriter.Flush();
+
 					myWriter.Close();
 					myWriter.Dispose();
 
@@ -165,10 +161,14 @@ namespace OperatorAdder.ViewModel
 			Thread.Sleep(1000);
 		}
 
+        /// <summary>
+        ///  If the file can be opened for exclusive access it means that the file
+        ///  is no longer locked by another process.
+        /// </summary>
+        /// <param name="filename">Curent filename that we check</param>
+        /// <returns>bool value</returns>
 		public static bool IsFileReady(string filename)
 		{
-			// If the file can be opened for exclusive access it means that the file
-			// is no longer locked by another process.
 			try
 			{
 				using (FileStream inputStream = File.Open(filename, FileMode.Open, FileAccess.Read, FileShare.None))
@@ -180,30 +180,6 @@ namespace OperatorAdder.ViewModel
 			}
 		}
 
-
-		/*public async Task FileChecker(string fn ) {
-			while (true)
-			{
-				try
-				{
-					using (StreamReader Fs = new StreamReader(fn))
-					{
-						//the file is close
-						Fs.Close();
-						break;
-					}
-				}
-				catch (IOException ex)
-				{
-					//wait and retry
-					FileText = "File I/O Error on check ";
-					File.AppendAllText(logFile, FileText + ' ' + fn + ' ' + ex.ToString());
-					Thread.Sleep(1000);
-				}
-			}
-		
-			await FileChecker(fn);
-		} */
 		#region ICommand _addCommand;
 		private ICommand _addCommand;
 		public ICommand AddCommand
